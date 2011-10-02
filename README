@@ -1,0 +1,4 @@
+Requirements:
+    Django
+    sqlite3
+    python2.7
