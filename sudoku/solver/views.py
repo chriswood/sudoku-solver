@@ -3,6 +3,11 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
 
+import string
+
+# Ok so now the board is drawn with defaults
+# now we need to let people enter values
+
 
 def main(request):
     # hardcode this for now, but it can be any size square
@@ -39,8 +44,19 @@ class Puzzle:
         else:
             self.values = values
 
+    def _get_box_name(self, pos):
+        '''
+        Return the 2 dimension name for the position relative to the
+        dimension of the puzzle
+        '''
+        convert_list = string.uppercase[:self.dimension.x]
+        x = convert_list[pos/self.dimension.x]
+        # I figure not everyone appreciates zero indexing like me :)
+        y = (pos % self.dimension.x) + 1
+        return '%s%d' %(x, y)
+
     def _get_defaults(self):
-        return ['NA' for x in range(self.dimension.cardinality)]
+        return [self._get_box_name(x) for x in range(self.dimension.cardinality)]
 
     def draw_board(self):
         '''
