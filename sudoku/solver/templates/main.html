@@ -10,8 +10,35 @@
 </head>
 <body>
 <h1>Sudoku Puzzle Solver 9000</h1>
-<table border='15' cellpadding='18'>
-    {{ board }}
+<table colspan=2>
+    <tr>
+        <td>
+            <table border='15' cellpadding='18'>
+                {{ board }}
+            </table>
+        </td>
+        <td>
+            <table border="1">
+                <tr>
+                    <td>
+                        <form action="/sudoku/" method="post">
+                            <div style='display:none'>{% csrf_token %}</div>
+                                {% for square in fields %}
+                                    <p>
+                                        <label for="{{ square.label }}">{{ square.label }}:</label> <input id="{{ square.label }}" type="text" name="{{ square.label }}" maxlength="1" size='1' value='{{ square.value }}'/>
+                                    </p>
+                                    {% if forloop.counter|divisibleby:"9" %}
+                                        </td>
+                                        <td>
+                                    {% endif %}
+                                {% endfor %}
+                            <input type="submit" value="Update" />
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 </body>
 </html>
