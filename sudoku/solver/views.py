@@ -11,6 +11,10 @@ import string
 
 def main(request):
     # hardcode this for now, but it can be any size square
+    # after thinking about this, I don't think you can have anything BUT a
+    # 9*9 puzzle, but maybe there are some weird 81*81's or something out
+    # there ao I'll leave this as a hardcoded variable that can change
+    # as far as the rest of the code is concerned
     dimension = Dimension([9, 9])
     context_dict = {}
 
@@ -38,8 +42,12 @@ class Puzzle:
             values is a list of puzzle square contents
         """
         self.dimension = dimension
+        self.html = ''
+
         if not values:
             self.values = self._get_defaults()
+        elif values == 'sample':
+            return sample_puzzle()
         else:
             self.values = self._process_values(values)
 
@@ -87,16 +95,51 @@ class Puzzle:
         a unique id corresponding to its position. We'll also fill in the board
         values already in memory.
         '''
-        # first draw an empty board
-        html = ''
-        for index, el in enumerate(self.values):
-            if index % self.dimension.x == 0:
-                html += '<tr>'
-            html += "<td id='%s'>%s</td>" %(index, el)
-            if index % self.dimension.x == (self.dimension.x - 1):
-                html += '</tr>'
+        # first, figure out the overarching structure for the board
+        try:
+            x = self.dimension.x ** .5
+            # for sudoku this should never be a problem but just in case...
+            assert(int(x) == x)
+        except AssertionError:
+            raise
+        # build up the html via a few list comprehensions
+        [self._outer(index, val, x) for index, val in enumerate(self.values)]
+        return mark_safe(self.html)
 
-        return mark_safe(html)
+    def _inner(self, i_nest, x):
+        '''
+        Build each individual inner cube within the puzzle.
+        '''
+        inner_html = ''
+        if i_nest % x == 0:
+            inner_html += '<tr>'
+        inner_html += '<td width="27px">'
+        inner_html += self.values[i_nest]
+        inner_html += '</td>'
+        if i_nest % x == (x - 1):
+            inner_html += '</tr>'
+        self.html += inner_html
+
+    def _outer(self, index, el, x):
+        '''
+        Build the outside framework for our puzzle board based on
+        dimensions previously set.
+        '''
+        if index % (self.dimension.x * x) == 0:
+            self.html += '<tr>'
+        if index % self.dimension.x == 0:
+            self.html += '<td><table cellpadding="8" border="1">'
+            [self._inner(i_nest, x) for i_nest in range(index, index + self.dimension.x)]
+        if index % self.dimension.x == (self.dimension.x - 1):
+            self.html += '</table></td>'
+        if index % self.dimension.x * x == (self.dimension.x * x) - 1:
+            self.html += '</tr>'
+
+    def sample_puzzle(self):
+        '''
+        Return a real sudoku puzzle for debugging and building this thing.
+        '''
+        pass
 
 
 class Dimension(object):
