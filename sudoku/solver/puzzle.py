@@ -52,11 +52,13 @@ class Puzzle:
         """
         # first just draw the empty fields
         field_list = []
-        value = ''
+
         for index, element in enumerate(range(self.dimension.cardinality)):
+            value = self.values[index]
+            label = self._get_box_name(index)
             field_dict = {
                 'label': self._get_box_name(index),
-                'value': value
+                'value': value if value != label else ''
             }
             field_list.append(field_dict)
         return field_list
