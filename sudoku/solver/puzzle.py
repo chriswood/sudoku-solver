@@ -17,10 +17,13 @@ class Puzzle:
         self.html = ''
         
         if not values:
+            # initial page view
             self.values = self._get_defaults()
         elif values == 'sample':
+            # sample puzzle
             self.values = self.sample_puzzle()
         else:
+            # normal behavior, update the board with cell values
             self.values = self._process_values(values)
 
     def _process_values(self, values):
@@ -42,8 +45,40 @@ class Puzzle:
         return '%s%d' %(x, y)
 
     def _get_defaults(self):
+        '''
+        Defaults are just the grid labels, to make it a bit easier to fill in
+        '''
         return [self._get_box_name(x) \
              for x in range(self.dimension.cardinality)]
+
+    def _inner(self, i_nest, x):
+        '''
+        Build each individual inner cube within the puzzle.
+        '''
+        inner_html = ''
+        if i_nest % x == 0:
+            inner_html += '<tr>'
+        inner_html += '<td width="27px" height="42px">'
+        inner_html += self.values[i_nest]
+        inner_html += '</td>'
+        if i_nest % x == (x - 1):
+            inner_html += '</tr>'
+        self.html += inner_html
+
+    def _outer(self, index, el, x):
+        '''
+        Build the outside framework for our puzzle board based on
+        dimensions previously set.
+        '''
+        if index % (self.dimension.x * x) == 0:
+            self.html += '<tr>'
+        if index % self.dimension.x == 0:
+            self.html += '<td><table cellpadding="8" border="1">'
+            [self._inner(i_nest, x) for i_nest in range(index, index + self.dimension.x)]
+        if index % self.dimension.x == (self.dimension.x - 1):
+            self.html += '</table></td>'
+        if index % self.dimension.x * x == (self.dimension.x * x) - 1:
+            self.html += '</tr>'
 
     def get_input_fields(self):
         """
@@ -80,35 +115,6 @@ class Puzzle:
         [self._outer(index, val, x) for index, val in enumerate(self.values)]
         return mark_safe(self.html)
 
-    def _inner(self, i_nest, x):
-        '''
-        Build each individual inner cube within the puzzle.
-        '''
-        inner_html = ''
-        if i_nest % x == 0:
-            inner_html += '<tr>'
-        inner_html += '<td width="27px" height="42px">'
-        inner_html += self.values[i_nest]
-        inner_html += '</td>'
-        if i_nest % x == (x - 1):
-            inner_html += '</tr>'
-        self.html += inner_html
-
-    def _outer(self, index, el, x):
-        '''
-        Build the outside framework for our puzzle board based on
-        dimensions previously set.
-        '''
-        if index % (self.dimension.x * x) == 0:
-            self.html += '<tr>'
-        if index % self.dimension.x == 0:
-            self.html += '<td><table cellpadding="8" border="1">'
-            [self._inner(i_nest, x) for i_nest in range(index, index + self.dimension.x)]
-        if index % self.dimension.x == (self.dimension.x - 1):
-            self.html += '</table></td>'
-        if index % self.dimension.x * x == (self.dimension.x * x) - 1:
-            self.html += '</tr>'
-
     def sample_puzzle(self):
         '''
         Return a real sudoku puzzle for debugging and building this thing.
@@ -125,6 +131,3 @@ class Puzzle:
             '', '', '', '4', '1', '9', '', '8', '',
             '2', '8', '', '', '', '5', '', '7', '9',
         ]
-        
-        
-        
