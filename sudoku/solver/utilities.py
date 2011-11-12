@@ -14,3 +14,9 @@ class Dimension(object):
 
     def __str__(self):
         return('%s,%s' %(self.x, self.y))
+
+def is_post(request):
+    '''
+    just to make things more readable
+    '''
+    return request.META['REQUEST_METHOD'] == 'POST'

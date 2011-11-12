@@ -2,3 +2,9 @@ Requirements:
     Django
     sqlite3
     python2.7
+
+TODOs:
+When user clicks a box in the puzzle board, bring focus and cursor to
+    the corresponding data entry grid.
+
+Label the puzzle board axis.

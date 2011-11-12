@@ -24,7 +24,7 @@
             <table border="1">
                 <tr>
                     <td>
-                        <form action="/sudoku/" method="post">
+                        <form action="/sudoku/" method="post" id='puzzle-values-form'>
                             <div style='display:none'>{% csrf_token %}</div>
                                 {% for square in fields %}
                                     <p>
@@ -38,6 +38,7 @@
                             <input type="submit" value="Update" />
                             <input type="button" value="Clear all values" id='clear'>
                             <input type="button" value="Load sample puzzle" id='sample' />
+                            <input type="button" value="Let the 9000 solve" id='solve-9000' />
                         </form>
                     </td>
                 </tr>
