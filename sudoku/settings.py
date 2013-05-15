@@ -10,10 +10,11 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+#TODO - Make this general
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/Users/cwood/side-projects/sudoku-db/sudoku_db',
+        'NAME': '/home/chris/databases/sudoku_db',
         'USER': '',        # Not used with sqlite3.
         'PASSWORD': '',    # Not used with sqlite3.
         'HOST': '',        # Set to empty string for localhost. Not used with sqlite3.
@@ -85,7 +86,7 @@ STATICFILES_FINDERS = (
 
 # TODO use getcwd + relative path even for development
 # STATIC_DOC_ROOT = os.path.join(os.getcwd(), 'media')
-STATIC_DOC_ROOT = '/Users/cwood/side-projects/sudoku-solver/media/'
+STATIC_DOC_ROOT = '/home/chris/code/sudoku-solver/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '%v!l-5xcjach2he5pp93ezbq5nqy-@@&ic6v@hf-wz0t&%7t&p'
